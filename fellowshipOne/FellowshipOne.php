@@ -11,11 +11,12 @@
 	 *
 	 */
 	class FellowshipOne{
-		
+	
 		private $settings;
 		private $consumer;
 		private $token;
-		
+		//this var is used from any object that accesses it, so it's seperated out and made publix
+		public $baseUrl;				
 		
 		public $paths = array(
 			'portalUser' => array(
@@ -55,6 +56,7 @@
 		 */
 		public function __construct($settings){
 			$this->settings = (object) $settings;
+			$this->baseUrl = $settings['baseUrl'];
 			$this->consumer = new OAuthConsumer($this->settings->key, $this->settings->secret, NULL);
 		}
 		
