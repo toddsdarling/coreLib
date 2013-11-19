@@ -10,7 +10,7 @@
 			'households' => array(
 				'newHousehold' => '/v1/Households/new',
 				'createHousehold' => '/v1/Households',
-				'getHouseholdMembers' => '/v1/Households/{householdID}/People.json',
+				'getHouseholdMembers' => '/v1/Households/{householdID}/People',
 				'listHouseholdMemberTypes' => '/v1/People/HouseholdMemberTypes',
 				'searchHouseholdsByName' => '/v1/Households/Search',													
 			),
@@ -210,7 +210,7 @@
 			}
 			
 			$url = str_replace('{householdID}',$hid, $this->f1CoreObj->baseUrl . $this->paths['households']['getHouseholdMembers'] . ".json");			
-			$householdMembers = $_SESSION['f1Obj']->fetchGetJson($url);
+			$householdMembers = $this->f1CoreObj->fetchGetJson($url);
 			
 			if (is_array($members) && count($members) == 0) {
 				//if no household positions passed in, then return everybody
@@ -219,9 +219,11 @@
 				//loop through household members looking for people in positions that match the array
 				//passed in	
 				if (is_array($householdMembers['people']['person'])) {
-					foreach ($householdMembers['people']['person'] as $memberObj) {
 						
+					foreach ($householdMembers['people']['person'] as $memberObj) {
+																							
 						if (in_array($memberObj['householdMemberType']['name'],$members)) {
+							
 							//if you've passed the first test of just being in the members array 
 							//then check for inactive
 							if ($includeInactive) {
@@ -230,6 +232,7 @@
 							} else {
 								//check for inactive
 								if ($memberObj['status']['name'] != 'Inactive Member' && $memberObj['status']['name'] != 'Dropped' && $memberObj['status']['name'] != 'Deceased' ) {
+																			
 									array_push($people,$memberObj);		
 								}																
 							}							

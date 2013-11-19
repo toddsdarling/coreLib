@@ -11,13 +11,7 @@
 			'setAttribute' => '/v1/People/{personID}/Attributes',
 			'listAttributeGroups' => '/v1/People/AttributeGroups',
 			'getPersonAttributes' => '/v1/People/{personID}/Attributes',
-			'updatePersonAttributes'=> '/v1/People/{personID}/Attributes/{attributeID}',
-
-			'createAddress' => '/v1/People/{personID}/Addresses',
-			'newCommunication' => '/v1/People/{personID}/Communications/new',
-			'createCommunication' => '/v1/People/{personID}/Communications',
-			'listCommunication' => '/v1/People/{personID}/Communications',
-			'getSchoolGrade'=>'/v1/People/{personID}/Attributes/{attrid}'
+			'updatePersonAttributes'=> '/v1/People/{personID}/Attributes/{attributeID}'			
 		);		
 		
 	
