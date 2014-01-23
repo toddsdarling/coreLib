@@ -87,7 +87,7 @@
 		 * information with your search
 		 * http://developer.fellowshipone.com/docs/v1/People.help#search
 		 * @param array $attributes
-		 * @param string $include
+		 * @param string $include		 
 		 */
 		public function searchPeople($attributes,$include = ''){
 			
@@ -98,7 +98,9 @@
 				//tack on the include string if one was passed in
 				$url .= '&include=' . $include;
 			}
-		
+
+			$url .= '&includeInactive=False';
+			
 			return $this->f1CoreObj->fetchGetJson($url);	
 		}
 		

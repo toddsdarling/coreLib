@@ -55,9 +55,42 @@
 		
 			$url = $this->f1CoreObj->baseUrl . $this->paths['search'] . $paramString;
 			return $this->f1CoreObj->fetchGetJson($url);
-		}		
-		
+		}
+
 		/**
+		search groups in F1 with just a supplied array of params (lat/lng CAN be included or not)
+		pass in an array of params to search. NOTE: These MUST match the param names you can search for in F1. IsSearchable will always default to true unless passed in
+		@param array $searchParams			
+		*/
+
+		public function searchGroupsByParams($params) {
+			//parse out params and add them to the url	
+			$paramString = '';
+			$paramArray = array();
+
+
+			//latitude and longitude params are required
+			foreach ($params as $key => $value) {
+				//build array with each key value string
+				array_push($paramArray, $key . '=' . $value);
+			}
+
+			//then, join that array with the '&' to make the URL string
+			$paramString = implode('&', $paramArray);
+
+			//check to see if isSearchable was explicity passed in
+			//if not, default it to true
+			if (!array_key_exists('searchable',$params)) {
+				$paramString .= '&issearchable=true';
+			}
+						
+			$url = $this->f1CoreObj->baseUrl . $this->paths['search'] . '&' . $paramString;
+			return $this->f1CoreObj->fetchGetJson($url);			
+
+		}
+
+
+		/*
 		 * list groups within a certain type.  If you don't specify a type or it can't find that group type, it will return false.
 		 * If there are no groups within a certain type, it will just return false
 		 * @param $type string
