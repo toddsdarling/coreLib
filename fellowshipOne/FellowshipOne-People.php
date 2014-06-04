@@ -22,7 +22,7 @@
 				'updatePerson' => '/v1/People/{personID}',
 				'getPersonById' => '/v1/People/{personID}',
 				'searchPeople' => '/v1/People/Search',
-				'getStatuses' => '/v1/People/Statuses'	
+				'getStatuses' => '/v1/People/Statuses'
 			),
 		);		
 		

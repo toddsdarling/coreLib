@@ -161,16 +161,6 @@
 			return $this->fetchPostJson($url,$model);
 		}
 		
-		//update barcode with the new person's F1 ID
-		public function updateBarCode($personObj) {
-			//set the person's barcode to their ID
-			$personObj['person']['barCode'] = $personObj['person']['@id'];						
-			//build url with id
-			$url = $this->settings->baseUrl . '/v1/People/' . $personObj['person']['@id'];
-			return $this->fetchPostJson($url,json_encode($personObj));
-			
-		}
-		
 		public function listAttributeGroups() {
 			$url = $this->settings->baseUrl . '/v1/People/AttributeGroups.json';
 			$groups = $this->fetchGetJson($url);
