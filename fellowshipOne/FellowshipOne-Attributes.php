@@ -73,6 +73,7 @@
 									
 			if ($attributeGroups) {							
 				foreach ($attributeGroups['attributeGroups']['attributeGroup'] as $attrGroupObj) {
+
 					//only look for the campus group					
 					if ($attrGroupObj['name'] == $attributeGroup) {								
 						//set the group ID

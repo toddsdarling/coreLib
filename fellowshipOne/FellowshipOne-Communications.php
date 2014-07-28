@@ -13,7 +13,9 @@
 			'newHouseholdCommunication' =>'v1/Households/{householdID}/Communications/new',
 			'createPersonCommunication' => '/v1/People/{personID}/Communications',
 			'createHouseholdCommunication' => '/v1/Households/{householdID}/Communications',
-			'listCommunication' => '/v1/People/{personID}/Communications',			
+			'listCommunication' => '/v1/People/{personID}/Communications',
+			'newHouseholdAddress' => '/v1/Households/{householdID}/Addresses/new',
+			'newPersonAddress' => '/v1/People/{personID}/Addresses/new'				
 		);		
 		
 	
@@ -48,6 +50,23 @@
 			
 			
 		 }
+
+		/**
+		 * fetch address model from F1
+		 * @param int $personId
+		 */
+		public function getAddressModel($id,$type){
+			
+			if ($type == 'household') {
+				$url = str_replace('{householdID}',$id, $this->f1CoreObj->baseUrl . $this->paths['newHouseholdAddress'] . ".json");
+			} else if ($type == 'individual') {
+				$url = str_replace('{personID}',$id, $this->f1CoreObj->baseUrl . $this->paths['newPersonAddress'] . ".json");
+			}
+
+			return $this->f1CoreObj->fetchGetJson($url);
+		}
+
+
 		 
 		/**
 		 * This function gets a new communication model for a person or household so you can fill it out. Just pass in type 'person' or 'household'
@@ -104,6 +123,49 @@
 			
 			return $r;			
 			
+		  }
+
+		  /** 
+		  * This function takes a phone number, type and ID and creates a phone number. Make sure you pass the type (person or household), phone number and id
+		  * @param string $type
+		  * @param string $email
+		  * @param string $id
+		  * @param string phoneType (home or mobile...default is home)
+		  */
+
+		  public function createPhone($type, $phone, $id, $phoneType) {
+
+			//add in communications for that person
+			//get the communications json model from F1
+			$commModel = $this->newCommunicationModel($type, $id);
+
+			switch($phoneType) {
+
+			case 'mobile':
+				//Update the json model with the email address
+				$commModel['communication']['communicationType']['@id'] = "3";
+				$commModel['communication']['communicationType']['name'] = "Mobile Phone";																			
+			break;
+			
+			case 'home':
+				$commModel['communication']['communicationType']['@id'] = "1";
+				$commModel['communication']['communicationType']['name'] = "Home Phone";				
+			break;
+			//anything else gets set as a home phone
+			default:				
+				$commModel['communication']['communicationType']['@id'] = "1";
+				$commModel['communication']['communicationType']['name'] = "Home Phone";				
+			break;				
+
+			}
+
+			$commModel['communication']['communicationValue'] = $phone;
+			
+			//Write the email communication into F1
+			$r = $this->createCommunication($type, $commModel, $id);
+			
+			return $r;	
+
 		  }
 		 
 		 

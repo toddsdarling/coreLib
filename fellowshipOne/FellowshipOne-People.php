@@ -130,13 +130,20 @@
 				if ($statusObj['name'] == $statusName) {
 					//if the status name matched, add it to the array, then look at the substatus if need be
 					$returnArr['statusID'] = $statusObj['@id'];
+
 					if ($subStatus != '') {
-						foreach ($statusObj['subStatus'] as $subStatusObj) {
-							if ($subStatusObj['name'] == $subStatus) {
-								$returnArr['subStatusID'] == $subStatusObj['@id'];
-								return $returnArr;
-							}
-						}											
+						//make sure there are sub statuses to loop through
+						if (is_array($statusObj['subStatus'])) {
+							foreach ($statusObj['subStatus'] as $subStatusObj) {							
+								if ($subStatusObj['name'] == $subStatus) {
+									$returnArr['subStatusID'] = $subStatusObj['@id'];								
+									return $returnArr;
+								}
+							}											
+						} else {
+							return $returnArr;
+						}
+
 					} else {
 						return $returnArr;
 					}
