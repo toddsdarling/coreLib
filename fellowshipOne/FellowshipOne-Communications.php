@@ -15,7 +15,11 @@
 			'createHouseholdCommunication' => '/v1/Households/{householdID}/Communications',
 			'listCommunication' => '/v1/People/{personID}/Communications',
 			'newHouseholdAddress' => '/v1/Households/{householdID}/Addresses/new',
-			'newPersonAddress' => '/v1/People/{personID}/Addresses/new'				
+			'newPersonAddress' => '/v1/People/{personID}/Addresses/new',
+			'getCommunicationByPerson' => '/v1/People/{personID}/Communications',
+			'getAddressByHousehold' => '/v1/Households/{householdID}/Addresses',
+			'updatePersonCommunication' => '/v1/People/{personID}/Communications/{modelID}',
+			'updateHouseholdCommunication' => '/v1/People/{householdID}/Communications/{modelID}'		
 		);		
 		
 	
@@ -99,6 +103,27 @@
 			return $this->f1CoreObj->fetchPostJson($url,json_encode($model));			
 			
 		 }
+
+		 /**
+		 * This function will update a communication for a person based on a communication object you've already gotten for this person.  This will NOT
+		 * create a new communication. Just pass in the model you should already have with the updated values
+		 * @param array $model
+		 * @param string $type (person or household)
+		 */
+
+		 public function updateCommunication($model, $type) {
+
+		 	if ($type == 'person') {
+		 		$url = str_replace('{personID}',$model['communication']['person']['@id'], $this->f1CoreObj->baseUrl . $this->paths['updatePersonCommunication'] . ".json");
+		 		$url = str_replace('{modelID}',$model['communication']['@id'], $url);
+		 	} else {
+		 		$url = str_replace('{householdID}',$model['communication']['person']['@id'], $this->f1CoreObj->baseUrl . $this->paths['updateHouseholdCommunication'] . ".json");
+		 		$url = str_replace('{modelID}',$model['communication']['@id'], $url);
+		 	}
+
+		 	return $this->f1CoreObj->fetchPostJson($url,json_encode($model));	
+
+		 }
 		 
 		 
 		 /** This function takes an email value and a PID and creates an email for that person. Make sure you pass the type, person or household
@@ -167,6 +192,49 @@
 			return $r;	
 
 		  }
+
+		  /**
+		  * This function gets a communication value by type and person ID 
+		  * @param string $id
+		  * @param string type
+		  */
+
+			public function getCommunicationByPerson($pid,$commType) {
+
+				$url = str_replace('{personID}',$pid, $this->f1CoreObj->baseUrl . $this->paths['getCommunicationByPerson'] . ".json");
+
+				$communications = $this->f1CoreObj->fetchGetJson($url);
+				
+				if (is_array($communications['communications']['communication'])) {
+					foreach ($communications['communications']['communication'] as $commObj) {
+						if ($commObj['communicationType']['name'] == $commType) {				
+							return $commObj;
+						}
+					}		
+				}
+				
+				//simply return a blank if nothing is found
+				return false;
+			}
+
+			/**
+			* This function gets an address by passing in the household ID
+			* @param string $householdID
+			*/
+
+			public function getAddressByHousehold($hid) {
+				
+				$url = str_replace('{householdID}',$hid, $this->f1CoreObj->baseUrl . $this->paths['getAddressByHousehold'] . ".json");
+				$addresses = $this->f1CoreObj->fetchGetJson($url);
+				
+				if (is_array($addresses['addresses']['address'])) {
+					return $addresses;
+				} else {
+					return false;
+				}					
+					
+				return false;
+			}					  
 		 
 		 
 		 		

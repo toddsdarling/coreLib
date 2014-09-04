@@ -22,7 +22,8 @@
 				'updatePerson' => '/v1/People/{personID}',
 				'getPersonById' => '/v1/People/{personID}',
 				'searchPeople' => '/v1/People/Search',
-				'getStatuses' => '/v1/People/Statuses'
+				'getStatuses' => '/v1/People/Statuses',
+				'showFullStatusByID' => '/v1/People/Statuses/{id}'
 			),
 		);		
 		
@@ -113,7 +114,7 @@
 		}
 		
 		/**
-		 * This function takes a status name and sub-status and returns you the status obj (which will include any sub-statuses) out of F1 so you can use it to set a person object status. 
+		 * This function takes a status name and sub-status and returns you the status ID (which will include any sub-statuses) out of F1 so you can use it to set a person object status. 
 		 * Be sure the status is already created in F1, as you cannot create new statuses through the API. You can optionally pass a sub-status filter. It will return an array of status ID and 
 		 * sub-status ID
 		 * @param string $status
@@ -154,6 +155,20 @@
 			
 			return false;
 					
+		}
+
+
+		/**
+		* This function will give you the full status object (including sub-statuses) by id.
+		* @param string $id
+		*/
+
+		public function getFullStatusByID($id) {
+
+			$url = str_replace('{id}',$id, $this->f1CoreObj->baseUrl . $this->paths['people']['showFullStatusByID'] . ".json");					
+			return $this->f1CoreObj->fetchGetJson($url);	
+
+
 		}
 		
 	
@@ -258,12 +273,7 @@
 				
 			}
 		}		
-		
 			
-		
-		
-		
-		
 	}
     
     

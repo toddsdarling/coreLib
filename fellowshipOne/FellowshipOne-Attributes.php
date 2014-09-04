@@ -11,7 +11,8 @@
 			'setAttribute' => '/v1/People/{personID}/Attributes',
 			'listAttributeGroups' => '/v1/People/AttributeGroups',
 			'getPersonAttributes' => '/v1/People/{personID}/Attributes',
-			'updatePersonAttributes'=> '/v1/People/{personID}/Attributes/{attributeID}'			
+			'updatePersonAttributes'=> '/v1/People/{personID}/Attributes/{attributeID}',
+			'removePersonAttributes' => '/v1/People/{personID}/Attributes/{attributeID}/Delete'		
 		);		
 		
 	
@@ -64,7 +65,7 @@
 		 * @param string $comment
 		 */
 		 			
-		function setAttributeByName($attributeGroup, $attributeName,$personID, $comment = '') {
+		public function setAttributeByName($attributeGroup, $attributeName,$personID, $comment = '') {
 			
 			$today = new DateTime('now');
 			
@@ -110,14 +111,26 @@
 					
 
 			
-		}	
+		}
+
+		/** This function will remove a single attribute from a person.  Pass the person id and the attribute id in
+		* @param string $pid
+		* @param string $attrid
+		*/
+
+		public function removeAttributeFromPerson($pid, $attrid) {
+			$url = str_replace('{personID}',$pid, $this->f1CoreObj->baseUrl . $this->paths['removePersonAttributes'] . '.json');
+			$url = str_replace('{attributeID}',$attrid, $url);
+
+			return $this->f1CoreObj->fetchGetJson($url);
+		}
 
 
 		/**
 		 * This function will get all the attributes for a person based on their F1 ID
 		 * @param string $pid
 		 */
-		 function getPersonAttributes($pid) {
+		 public function getPersonAttributes($pid) {
 		 	$url = str_replace('{personID}',$pid, $this->f1CoreObj->baseUrl . $this->paths['getPersonAttributes'] . '.json');
 			return $this->f1CoreObj->fetchGetJson($url);			
 		 }
@@ -128,11 +141,47 @@
 		  * @param array $model
 		  */
 		  
-		  function updatePersonAttribute($pid,$model) {
+		  public function updatePersonAttribute($pid,$model) {
 		  	$url = str_replace('{personID}',$pid, $this->f1CoreObj->baseUrl . $this->paths['updatePersonAttributes'] . '.json');
 			$url = str_replace('{attributeID}',$model['attribute']['@id'], $url);					
 		  	return $this->f1CoreObj->fetchPostJson($url,json_encode($model));
 		  }
+
+		 /**
+		  * This function returns all the attributes in a group name that you pass in.
+		  *  NOTE: the group name MUST match the group name in F1
+		  * @param string $pid
+		  * @param array $model
+		  */
+
+		public function getAttributesInGroup($whichGroup) {
+			
+			$path = $this->f1CoreObj->baseUrl . '/v1/People/AttributeGroups.json';
+			$attributeGroups = $this->f1CoreObj->fetchGetJson($path);
+					
+			if ($attributeGroups) {
+								
+				//loop through them to find the group you're looking for
+				foreach ($attributeGroups['attributeGroups']['attributeGroup'] as $groupObj) {	
+					//compare the attribute groups by name			
+					if (strtolower($groupObj['name']) == strtolower($whichGroup)) {				
+						//return the array of attributes in that group
+						return $groupObj['attribute'];												
+					} 									
+				}
+						
+			} else {
+				//couldn't get the attribute groups
+				return false;
+			}
+			
+			return false;
+			
+		}		  
+
+
+
+
 
 }
     
