@@ -1,4 +1,6 @@
 coreLib
 =======
 
-This is a group of core files that we use when working with F1 Integrations, Mailchimp, Mandrill or any other systems that we're integrating with.
+This is code written agaisnt the API of our ChMS (Church Management Software) to provide helper functions to make it easier to do common tasks such as add people, update communication records, add custom attributes, etc.
+
+This uses a piece of core code from the ChMS software company, then I created my own extensions for it.
